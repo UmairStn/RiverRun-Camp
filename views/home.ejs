@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RiverRun Camp</title>
+    
+    <!-- REMOVE THIS LINE: <link rel="stylesheet" href="/styles/output.css"> -->
+
+    <!-- ADD THESE LINES INSTEAD -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sunset-orange': '#ff9966',
+                        'red-violet': '#ff5e62'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="/styles/home.css">
+</head>
+
+<body class="flex flex-col h-screen bg-gray-900 font-sans overflow-hidden">
+    <div class="relative w-full h-full">
+        
+        <!-- Navbar Overlay -->
+        <header class="absolute top-0 left-0 right-0 z-50 py-6 px-8 flex justify-between items-center">
+            <h3 class="text-2xl font-extrabold text-white drop-shadow-md">RiverRunCamp</h3>
+            <nav class="hidden md:flex space-x-8 items-center">
+                <a class="text-gray-200 hover:text-white font-medium transition duration-300 drop-shadow-sm" href="/campgrounds">Campgrounds</a>
+                <% if(!currentUser) { %>
+                    <a class="text-gray-200 hover:text-white font-medium transition duration-300 drop-shadow-sm" href="/login">Login</a>
+                    <a class="px-6 py-2 bg-white/10 backdrop-blur-md border border-white/20 text-white font-semibold rounded-full hover:bg-white/20 transition duration-300" href="/register">Register</a>
+                <% } else { %>
+                    <a class="text-gray-200 hover:text-white font-medium transition duration-300" href="/logout">Logout</a>
+                <% } %>
+            </nav>
+        </header>
+
+        <main class="flex-grow flex items-center justify-center relative w-full h-full">
+            <!-- Background Image with Zoom Animation -->
+            <div class="absolute inset-0 -z-10 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" 
+                     alt="Camping Background" 
+                     class="w-full h-full object-cover transform scale-105 animate-slow-zoom">
+                <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/60"></div>
+            </div>
+
+            <!-- Glassmorphism Card -->
+            <div class="relative z-10 px-6">
+                <div class="max-w-3xl mx-auto text-center p-10 md:p-16 rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl">
+                    <h1 class="text-5xl md:text-7xl font-black text-white mb-6 tracking-tight drop-shadow-lg">
+                        Welcome to RiverRun Camp!
+                    </h1>
+                    <p class="text-lg md:text-xl text-gray-200 mb-10 leading-relaxed max-w-2xl mx-auto">
+                        Jump right in and explore our many campgrounds.
+                    </p>
+                    <a href="/campgrounds" class="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-200 bg-orange-600 font-pj rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600 hover:bg-orange-700">
+                        View Campgrounds
+                        <svg class="w-5 h-5 ml-2 -mr-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                    </a>
+                </div>
+            </div>
+        </main>
+
+        <footer class="absolute bottom-0 w-full py-6 text-center text-gray-400 text-sm z-10">
+            <p>&copy; 2025 RiverRunCamp</p>
+        </footer>
+    </div>
+    
+    <style>
+        @keyframes slow-zoom {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+        .animate-slow-zoom {
+            animation: slow-zoom 20s infinite alternate ease-in-out;
+        }
+    </style>
+</body>
+</html>

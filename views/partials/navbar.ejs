@@ -1,0 +1,64 @@
+<nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/50 transition-all duration-300">
+    <div class="container mx-auto px-6">
+        <div class="flex justify-between items-center py-4">
+            <!-- Brand -->
+            <!-- 1. Change href="#" to href="/" on the parent anchor tag -->
+            <a class="flex items-center gap-2 group" href="/">
+                <svg class="w-8 h-8 text-sunset-orange transform group-hover:rotate-12 transition duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                <!-- 2. Remove href="/" from the span -->
+                <span class="text-2xl font-extrabold tracking-tight text-gray-900 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-sunset-orange group-hover:to-red-violet transition duration-300">RiverRun Camp</span>
+            </a>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg hover:bg-gray-100 focus:outline-none text-gray-600 transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex space-x-8 items-center">
+                <a class="text-sm font-semibold text-gray-600 hover:text-sunset-orange transition duration-300" href="/">Home</a>
+                <a class="text-sm font-semibold text-gray-600 hover:text-sunset-orange transition duration-300" href="/campgrounds">Campgrounds</a>
+                <a class="text-sm font-semibold text-gray-600 hover:text-sunset-orange transition duration-300" href="/campgrounds/new">New Campgrounds</a>
+                
+                <div class="flex items-center space-x-3 ml-6 pl-6 border-l border-gray-200">
+                    <% if(currentUser) { %>
+                        <span class="text-sm text-gray-400 mr-2">Hi, <%= currentUser.username %></span>
+                        <a class="px-5 py-2 text-sm font-bold text-gray-700 border border-gray-300 rounded-full hover:bg-gray-50 hover:border-gray-400 transition duration-300" href="/logout">Logout</a>
+                    <% }else{ %>
+                        <a class="px-5 py-2 text-sm font-bold text-gray-600 hover:text-gray-900 transition duration-300" href="/login">Login</a>
+                        <a class="px-5 py-2 text-sm font-bold text-white bg-gray-900 rounded-full hover:bg-gray-800 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition duration-300" href="/register">Sign Up</a>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-gray-100 bg-white/95 backdrop-blur-xl absolute left-0 right-0 px-6 pb-6 shadow-xl">
+            <div class="flex flex-col space-y-4 mt-4">
+                <a class="text-gray-600 font-medium hover:text-sunset-orange" href="/">Home</a>
+                <a class="text-gray-600 font-medium hover:text-sunset-orange" href="/campgrounds">Campgrounds</a>
+                <a class="text-gray-600 font-medium hover:text-sunset-orange" href="/campgrounds/new">New Campgrounds</a>
+                <div class="h-px bg-gray-100 my-2"></div>
+                <% if(currentUser) { %>
+                    <a class="w-full text-center px-5 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl" href="/logout">Logout</a>
+                <% }else{ %>
+                    <a class="w-full text-center px-5 py-3 text-gray-600 font-bold" href="/login">Login</a>
+                    <a class="w-full text-center px-5 py-3 bg-gray-600 text-gray-600 font-bold rounded-xl" href="/register">Sign Up</a>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script>
+    const btn = document.getElementById('mobile-menu-btn');
+    const menu = document.getElementById('mobile-menu');
+
+    if(btn && menu) {
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+    }
+</script>

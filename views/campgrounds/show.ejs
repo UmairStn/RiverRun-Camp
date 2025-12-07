@@ -1,0 +1,164 @@
+<% layout('layouts/boilerplate') %>
+<link rel="stylesheet" href="/styles/star.css">
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+    <!-- Left Column: Image & Details -->
+    <div class="col-span-1 space-y-8">
+        <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
+            <!-- Carousel -->
+            <div id="campgroundCarousel" class="relative group h-96">
+                <div class="carousel-inner relative w-full h-full overflow-hidden">
+                    <% campground.images.forEach((img, i) => { %>
+                        <div class="carousel-item absolute top-0 left-0 w-full h-full transition-opacity duration-700 ease-in-out <%= i === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0' %>" data-index="<%= i %>">
+                            <img src="<%= img.url %>" class="w-full h-full object-cover" alt="">
+                        </div>
+                    <% }) %>
+                </div>
+                <% if(campground.images.length > 1) { %>
+                    <button class="carousel-prev absolute top-1/2 left-4 transform -translate-y-1/2 bg-white/20 backdrop-blur-md text-white p-3 rounded-full hover:bg-white/40 transition duration-300 focus:outline-none z-20">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                    </button>
+                    <button class="carousel-next absolute top-1/2 right-4 transform -translate-y-1/2 bg-white/20 backdrop-blur-md text-white p-3 rounded-full hover:bg-white/40 transition duration-300 focus:outline-none z-20">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+                <% } %>
+            </div>
+
+            <div class="p-8">
+                <div class="flex justify-between items-baseline mb-4">
+                    <h5 class="text-3xl font-extrabold text-gray-900"><%= campground.title %></h5>
+                    <span class="text-2xl font-bold text-sunset-orange">$<%= campground.price %><span class="text-sm text-gray-500 font-normal">/night</span></span>
+                </div>
+                <p class="text-gray-600 mb-6 leading-relaxed"><%= campground.description %></p>
+                
+                <div class="space-y-3 pt-6 border-t border-gray-100">
+                    <div class="flex items-center text-gray-600">
+                        <svg class="w-5 h-5 mr-3 text-red-violet" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        <%= campground.location %>
+                    </div>
+                    <% if(campground.author) { %>
+                        <div class="flex items-center text-gray-600">
+                            <svg class="w-5 h-5 mr-3 text-red-violet" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                            Submitted by <span class="font-semibold ml-1"><%= campground.author.username %></span>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+            
+            <% if(currentUser && campground.author._id.equals(currentUser._id)) { %>
+            <div class="px-8 py-6 bg-gray-50 border-t border-gray-100 flex space-x-4">
+                <a class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition duration-300 shadow-md" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
+                <form class="inline" action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST">
+                    <button class="px-6 py-2 bg-red-600 text-white font-semibold rounded-full hover:bg-red-700 transition duration-300 shadow-md" type="submit">Delete</button>
+                </form>
+                <a class="px-6 py-2 border border-gray-300 text-gray-700 font-semibold rounded-full hover:bg-gray-100 transition duration-300" href="/campgrounds">Back</a>
+            </div>
+            <% } %>
+        </div>
+    </div>
+  
+    <!-- Right Column: Map & Reviews -->
+    <div class="col-span-1 space-y-8">
+        <div id="map" class="w-full h-80 rounded-3xl shadow-xl overflow-hidden border border-gray-100"></div>
+        
+        <% if(currentUser) { %>
+        <form action="/campgrounds/<%= campground._id %>/reviews" method="POST" class="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 validated-form" novalidate>
+            <h2 class="text-2xl font-bold mb-6 text-gray-900">Leave a Review</h2>
+            <div class="mb-6">
+                <fieldset class="starability-basic">
+                    <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
+                    <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                    <label for="first-rate1" title="Terrible">1 star</label>
+                    <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                    <label for="first-rate2" title="Not good">2 stars</label>
+                    <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                    <label for="first-rate3" title="Average">3 stars</label>
+                    <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                    <label for="first-rate4" title="Very good">4 stars</label>
+                    <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                    <label for="first-rate5" title="Amazing">5 stars</label>
+                </fieldset>
+            </div>
+            <div class="mb-6">
+                <label class="block text-gray-700 font-semibold mb-2" for="body">Review Text</label>
+                <textarea class="w-full px-4 py-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sunset-orange focus:border-transparent transition duration-300" id="body" name="review[body]" rows="3" required></textarea>
+                <div class="valid-feedback text-green-500 text-sm mt-1 hidden">Looks good!</div>
+            </div>
+            <button class="px-8 py-3 bg-gradient-to-r from-sunset-orange to-red-violet text-white font-bold rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition duration-300" type="submit">Submit Review</button>
+        </form>
+        <% } %>
+
+        <div class="space-y-6">
+            <h3 class="text-2xl font-bold text-gray-900">Reviews</h3>
+            <% if(campground.reviews.length === 0) { %>
+                <p class="text-gray-500 italic">No reviews yet. Be the first to leave one!</p>
+            <% } %>
+            <% for(let review of campground.reviews) { %>
+                <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
+                    <div class="flex justify-between items-start mb-2">
+                        <h5 class="text-lg font-bold text-gray-900"><%= review.author.username %></h5>
+                        <% if(currentUser && review.author._id.equals(currentUser._id)) { %>
+                        <form action="/campgrounds/<%= campground._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
+                            <button class="text-red-500 hover:text-red-700 transition duration-300">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </form>
+                        <% } %>
+                    </div>
+                    <p class="starability-result mb-3 transform scale-75 origin-left" data-rating="<%= review.rating %>">
+                        Rated: <%= review.rating %> stars
+                    </p>
+                    <p class="text-gray-600"><%= review.body %></p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.maptiler.com/maptiler-sdk-js/v3.6.1/maptiler-sdk.umd.min.js"></script>
+<link href="https://cdn.maptiler.com/maptiler-sdk-js/v3.6.1/maptiler-sdk.css" rel="stylesheet" />
+
+<%-"<script>"%>
+    const maptilerApiKey = '<%- process.env.MAPTILER_API_KEY %>';
+    const campground = <%- JSON.stringify(campground) %>;
+<%-"</script>"%>
+
+<script src="/js/showPageMap.js"></script>
+
+<script>
+    // Simple Carousel Script
+    document.addEventListener('DOMContentLoaded', () => {
+        const items = document.querySelectorAll('.carousel-item');
+        const prevBtn = document.querySelector('.carousel-prev');
+        const nextBtn = document.querySelector('.carousel-next');
+        let currentIndex = 0;
+
+        if (items.length > 0) {
+            const showItem = (index) => {
+                items.forEach((item, i) => {
+                    if (i === index) {
+                        item.classList.remove('opacity-0', 'z-0');
+                        item.classList.add('opacity-100', 'z-10');
+                    } else {
+                        item.classList.remove('opacity-100', 'z-10');
+                        item.classList.add('opacity-0', 'z-0');
+                    }
+                });
+            };
+
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    currentIndex = (currentIndex - 1 + items.length) % items.length;
+                    showItem(currentIndex);
+                });
+            }
+
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    currentIndex = (currentIndex + 1) % items.length;
+                    showItem(currentIndex);
+                });
+            }
+        }
+    });
+</script>
