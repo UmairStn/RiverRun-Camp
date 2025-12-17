@@ -20,7 +20,7 @@ ImageSchema.virtual('thumbnail').get(function(){
     return this.url.replace('/upload', '/upload/w_200');
 })
 ImageSchema.virtual('homePage').get(function(){
-    return this.url.replace('/upload', '/upload/w_300,h_200,c_fill');
+    return this.url.replace('/upload', '/upload/w_800,h_600,c_fill,q_auto,f_auto');
 })
 
 const opts = { toJSON: { virtuals: true } };

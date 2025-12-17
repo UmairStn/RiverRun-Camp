@@ -1,6 +1,6 @@
-// if(process.env.NODE_ENV !== "production"){
-//     require('dotenv').config();
-// }
+if(process.env.NODE_ENV !== "production"){
+    require('dotenv').config();
+}
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -14,6 +14,7 @@ const ExpressError = require('./utils/ExpressError');
 const passport = require('passport');
 const localStrategy = require('passport-local');
 const helmet = require('helmet');
+const MongoStore = require('connect-mongo').default;
 // const mongoSanitize = require('express-mongo-sanitize');
 
 const User = require('./models/user');
@@ -22,14 +23,18 @@ const reviewsRoutes = require('./routes/reviewsRoutes');
 const userRoutes = require('./routes/userRoutes');
 const sanitizeV5 = require('./utils/mongoSanitizeV5.js');
 
+// Define these at the top with other constants
+const dbUrl = process.env.DB_URL
+const SECRET = process.env.SECRET
+// const dbUrl = 'mongodb://127.0.0.1:27017/river-run-camp';
+// const secret = process.env.SECRET || 'magicword';
 
 const app = express();
 app.set('query parser', 'extended');
 
 async function connectToDatabase(){
     try{
-        // Changed 'yelp-camp' to 'riverrun-camp'
-        await mongoose.connect('mongodb://127.0.0.1:27017/river-run-camp');
+        await mongoose.connect(dbUrl);
         console.log("MONGO CONNECTION OPEN!!");
     } catch (error) {
         console.error("MONGO CONNECTION ERROR!!");
@@ -44,7 +49,6 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 
-
 // 1. Configure express middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
@@ -52,9 +56,22 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(sanitizeV5({ replaceWith: '_' })); // to restrict noSQL injection attacks
 
 // 2. Session configuration - MUST be before passport
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    touchAfter: 24 * 60 * 60,
+    crypto: {
+        secret: SECRET
+    }
+});
+
+store.on("error", function(e){
+    console.log("SESSION STORE ERROR", e)
+})
+
 const sessionConfig = {
+    store,
     name: 'session',
-    secret: "magicWord",
+    secret: SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -63,6 +80,7 @@ const sessionConfig = {
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
 };
+
 app.use(session(sessionConfig));
 app.use(flash());
 app.use(helmet({ contentSecurityPolicy: false })); // to set various HTTP headers for app security
@@ -95,11 +113,9 @@ app.use('/', userRoutes);
 app.use('/campgrounds', campgroundsRoutes);
 app.use('/campgrounds/:id/reviews', reviewsRoutes);
 
-
 app.get('/', (req, res) => {
     res.render('home')
 })
-//show all campgrounds
 
 app.all(/(.*)/,(req, res, next)=>{
     next(new ExpressError('Page Not Found', 404));
@@ -111,6 +127,7 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(statusCode).render('error', { err });
 })
+
 app.listen(3000, (req, res)=>{
     console.log("Server is running on port 3000");
 })
