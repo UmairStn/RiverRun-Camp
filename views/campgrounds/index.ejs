@@ -1,57 +1,75 @@
 <% layout('layouts/boilerplate') %>
 
-<div class="text-center mb-16">
-    <h1 class="text-5xl font-black text-gray-900 mb-4 tracking-tight">Explore Nature</h1>
-    <p class="text-lg text-gray-500 mb-8">Find your next getaway from our community's favorites.</p>
-    <a href="/campgrounds/new" class="inline-flex items-center px-8 py-3 bg-gray-900 text-white font-bold rounded-full hover:bg-gray-800 transition transform hover:-translate-y-1 shadow-lg">
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-        Add Campground
+<div class="mb-8 text-center">
+    <a href="/campgrounds/new" class="inline-block bg-black text-white px-8 py-4 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl hover:from-orange-600 hover:to-orange-700 transform hover:scale-105 transition-all duration-300">
+        <svg class="inline-block w-6 h-6 mr-2 -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+        Add New Campground
     </a>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-    <% for(let campground of campgrounds) { %>
-        <div class="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 border border-gray-100">
-            <!-- Image Container -->
-            <div class="relative h-72 overflow-hidden">
+<!-- <div id="cluster-map" class="w-full h-96 rounded-3xl shadow-xl mb-12 overflow-hidden border border-gray-100"></div> -->
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+    <% for(let campground of campgrounds){ %>
+        <a href="/campgrounds/<%= campground._id %>" class="group block bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden border border-gray-100">
+            <div class="relative h-72 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
                 <% if(campground.images.length) { %>
-                    <img class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700" src="<%= campground.images[0].homePage %>" alt="<%= campground.title %>">
+                    <img src="<%= campground.images[0].homePage %>" 
+                         alt="<%= campground.title %>" 
+                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                 <% } else { %>
-                    <img class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700" src="https://res.cloudinary.com/douqbebwk/image/upload/v1600103881/RiverRunCamp/lz8jjv2gyqn16439dg8i.png" alt="">
+                    <div class="w-full h-full flex items-center justify-center">
+                        <svg class="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
                 <% } %>
-                <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-bold text-gray-900 shadow-sm">
-                    $<%= campground.price %>
+                
+                <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg">
+                    <span class="text-orange-600 font-bold text-lg">$<%= campground.price %></span>
                 </div>
             </div>
             
-            <!-- Content -->
             <div class="p-6">
-                <div class="flex items-center text-gray-400 text-xs font-semibold uppercase tracking-wider mb-2">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                    <%= campground.location %>
-                </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-orange-600 transition-colors">
-                    <a href="/campgrounds/<%= campground._id %>">
-                        <span class="absolute inset-0"></span>
-                        <%= campground.title %>
-                    </a>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2 group-hover:text-orange-600 transition-colors line-clamp-1">
+                    <%= campground.title %>
                 </h3>
-                <p class="text-gray-500 text-sm line-clamp-2"><%= campground.description %></p>
+                
+                <div class="flex items-center text-gray-500 text-sm mb-3">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span class="line-clamp-1"><%= campground.location %></span>
+                </div>
+                
+                <p class="text-gray-600 text-sm line-clamp-2 mb-4">
+                    <%= campground.description %>
+                </p>
+                
+                <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                    <span class="text-orange-600 font-semibold group-hover:underline">View Details →</span>
+                    <div class="flex items-center text-yellow-500">
+                        <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20">
+                            <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                        </svg>
+                        <span class="ml-1 text-gray-600 text-sm font-medium">4.5</span>
+                    </div>
+                </div>
             </div>
-        </div>
+        </a>
     <% } %>
 </div>
 
-<%- "<script>" %>
-const maptilerApiKey = "<%- process.env.MAPTILER_API_KEY %>";
-const campgrounds = {
-  type: "FeatureCollection",
-  features: <%- JSON.stringify(
-    campgrounds.map(campground => ({
-      type: "Feature",
-      geometry: campground.geometry,
-      properties: { popUpMarkup: campground?.properties?.popUpMarkup }
-    }))
-  ) %>
-};
-<%- "</script>" %>
+<!-- Cluster Map Scripts - Commented Out -->
+<!-- <script src="https://cdn.maptiler.com/maptiler-sdk-js/v3.6.1/maptiler-sdk.umd.min.js"></script>
+<link href="https://cdn.maptiler.com/maptiler-sdk-js/v3.6.1/maptiler-sdk.css" rel="stylesheet" />
+
+<%-"<script>"%>
+    const maptilerApiKey = '<%- process.env.MAPTILER_API_KEY %>';
+    const campgrounds = { features: <%- JSON.stringify(campgrounds) %> };
+<%-"</script>"%>
+
+<script src="/js/clusterMap.js"></script> -->
