@@ -26,7 +26,7 @@ module.exports.createCampground = async (req, res, next) => {
     newCampground.location = geoData.features[0].place_name; // Standardize location name
 
     newCampground.images = req.files.map(f => ({url: f.path, filename: f.filename}));
-    newCampground.author = req.user._id; // Associate the logged-in user as the author
+    newCampground.author = req.user._id; // Associate the logged-in user as the author (passport.js)
     await newCampground.save();
     // console.log(newCampground);
     req.flash('success', 'Successfully made a new campground!');

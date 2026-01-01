@@ -16,6 +16,9 @@ A full-stack web application for discovering, reviewing, and sharing campgrounds
 ## 🛠️ Tech Stack
 
 ### Backend
+- **JavaScript** - Core programming language for both server and client side.
+
+### Backend
 - **Node.js** - Runtime environment
 - **Express.js** - Web application framework
 - **MongoDB** - Database
