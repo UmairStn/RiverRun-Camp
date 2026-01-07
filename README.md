@@ -185,4 +185,3 @@ This project is open source and available under the [MIT License](LICENSE).
 - Mapbox for the mapping functionality
 - Cloudinary for image hosting
 - The open-source community for the amazing tools and libraries
-```
