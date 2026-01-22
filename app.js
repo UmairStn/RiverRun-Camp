@@ -94,7 +94,7 @@ passport.deserializeUser(User.deserializeUser()); //get user from session
 
 // 4. Custom middleware for flash - MUST include next()
 app.use((req, res, next) => {
-    console.log(req.query);
+    //console.log(req.query);
     res.locals.currentUser = req.user; // Add user to locals
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
@@ -117,7 +117,10 @@ app.get('/', (req, res) => {
     res.render('home')
 })
 
-app.all(/(.*)/,(req, res, next)=>{
+// app.all(/(.*)/,(req, res, next)=>{
+//     next(new ExpressError('Page Not Found', 404));
+// })
+app.use((req, res, next) => {
     next(new ExpressError('Page Not Found', 404));
 })
 
